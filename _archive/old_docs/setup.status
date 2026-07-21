@@ -1,0 +1,42 @@
+OpenUSD Live Control - Setup Status
+====================================
+
+Date: 2025-11-02 00:32
+Status: ✓✓✓ ALL CODE COMPLETE - AUTOMATED TESTS READY
+
+Progress:
+[███████████████████░] 95% - Run: scripts\run_all_tests.bat
+
+Completed:
+  ✅ workspace.ready    - Directory structure and git initialized
+  ✅ references.ready   - Third-party repos cloned
+  ✅ cleanup.ready      - USD installations consolidated  
+  ✅ venv.ready         - Python 3.11 virtual environment created
+  ✅ env.ready          - USD installed and pxr verified
+  ✅ bridge code        - Socket-based JSON bridge (no deps!)
+  ✅ cli code           - 8 command types implemented
+  ✅ launcher code      - run_usdview.bat created
+
+Pending Testing:
+  ⏳ viewer.ready       - Verify bridge starts (check logs)
+  ⏳ api.ready          - Test all CLI commands work
+  ⏳ docs.ready         - Document AMD GPU results
+
+Test Commands:
+  AUTOMATED: scripts\run_all_tests.bat (creates flags automatically!)
+  OR MANUAL:
+    Terminal 1: scripts\run_usdview.bat
+    Terminal 2: python scripts\send_cmd.py set_pose /World/Robot 2 0 0 0 45 0
+
+Expected Log Output:
+  logs\viewer.log should contain: [usdview-bridge] Listening on 127.0.0.1:8765
+
+Implementation:
+  Architecture: Socket-based (no websockets)
+  Commands: set_pose, set_visibility, add_cube, remove_prim, set_camera, etc.
+  Dependencies: None (standard library only)
+
+See: PHASE2_COMPLETE.md for details
+See: TESTING.md for full test suite
+See: QUICKSTART.md for quick reference
+

@@ -1,0 +1,16 @@
+{
+  "Plugins": [
+    {
+      "Name": "BridgePlugin",
+      "Type": "python",
+      "Info": {
+        "Types": {
+          "BridgePluginContainer": {
+            "bases": ["pxr.Usdviewq.plugin.PluginContainer"]
+          }
+        }
+      }
+    }
+  ]
+}
+

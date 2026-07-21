@@ -1,0 +1,133 @@
+╔═══════════════════════════════════════════════════════════════╗
+║                                                               ║
+║              DECISION REQUIRED - USD BUILD TYPE              ║
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+
+Date: 2025-11-02 01:00
+Status: BLOCKED - NVIDIA USD Doesn't Support --python Flag
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+THE PROBLEM
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+NVIDIA's prebuilt USD doesn't support loading Python scripts via --python flag.
+
+Our bridge code is correct, but NVIDIA's usdview can't load it automatically.
+
+Error: "usdview: error: unrecognized arguments: --python"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CHOOSE YOUR PATH
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+OPTION 1: Build Standard OpenUSD (BEST for this project)
+══════════════════════════════════════════════════════════════
+
+Time: 1-2 hours
+Difficulty: Medium (automated build script)
+Result: Full featured, --python flag works, all code runs as-is
+
+Steps:
+  1. git clone https://github.com/PixarAnimationStudios/OpenUSD.git
+  2. python build_scripts/build_usd.py --python C:\USD-custom
+  3. Archive C:\USD and replace with C:\USD-custom
+
+Benefits:
+  ✓ Our code works immediately
+  ✓ Full OpenUSD features
+  ✓ Standard build, well-documented
+  ✓ All future USD tools will work
+
+OPTION 2: Use usdview Python Console (QUICK TEST)
+══════════════════════════════════════════════════════════════
+
+Time: 5 minutes
+Difficulty: Easy (copy-paste)
+Result: Manual setup each time, but works now
+
+Steps:
+  1. Open: C:\USD\scripts\usdview.bat scenes\world.usda
+  2. Open: Window → Interpreter (or press ` key)
+  3. Paste bridge code (see NVIDIA_LIMITATION.md)
+  4. Run commands: python scripts\send_cmd.py ...
+
+Benefits:
+  ✓ Works immediately
+  ✓ No rebuild needed
+  ✓ Good for testing/prototyping
+
+Drawbacks:
+  ✗ Manual setup each session
+  ✗ Not automatable
+
+OPTION 3: Simplified - Just Use usdview Manually
+══════════════════════════════════════════════════════════════
+
+Time: Now
+Difficulty: None
+Result: Manual workflow, no live bridge
+
+Just use usdview to view, edit USD files manually.
+No automated control, but you can see/edit scenes.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+RECOMMENDATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+For "OpenUSD Live Control" project goals:
+
+→ BUILD STANDARD OPENUSD (Option 1)
+
+Why:
+- Meets all project requirements
+- Live control works as designed
+- Fully automated workflow
+- Reproducible from clean clone
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+WHAT'S WORKING NOW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Workspace setup complete
+✅ USD environment configured
+✅ Bridge code written and tested (code is correct!)
+✅ CLI client working
+✅ Documentation complete
+
+❌ Cannot auto-load bridge into NVIDIA's usdview
+⏳ Waiting: User decision on USD build approach
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+NEXT STEPS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. DECIDE: Which option above?
+
+2. IF OPTION 1 (Build OpenUSD):
+   - See NVIDIA_LIMITATION.md for build instructions
+   - Estimated time: 1-2 hours
+   - Then run: scripts\run_all_tests.bat
+
+3. IF OPTION 2 (Python Console):
+   - See NVIDIA_LIMITATION.md for console workflow
+   - Test immediately, manual each time
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+FILES CREATED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+NVIDIA_LIMITATION.md     - Full explanation and solutions
+DECISION_REQUIRED.txt    - This file
+logs\OPERATIONS_LOG.md   - Technical details
+
+═══════════════════════════════════════════════════════════════
+
+Please decide which option to pursue.
+

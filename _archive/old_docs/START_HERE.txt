@@ -1,0 +1,137 @@
+╔═══════════════════════════════════════════════════════════════╗
+║                                                               ║
+║         OPENUSD LIVE CONTROL - START HERE                    ║
+║                                                               ║
+║              ✓✓✓ READY FOR TESTING ✓✓✓                      ║
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+
+Date: 2025-11-02 00:28
+Status: Phase 2 Code Complete - Awaiting Your Testing
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+WHAT'S DONE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Phase 1: Environment Setup (100%)
+✅ Phase 2: Live Control System (Code Complete)
+
+- USD installed at C:\USD (NVIDIA Prebuilt)
+- Python 3.12.10 bundled
+- Socket-based JSON bridge implemented
+- 8 CLI commands ready
+- Zero external dependencies
+- No global PATH modifications
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+OPTION 1: AUTOMATED TESTS (ONE COMMAND!)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  cd C:\openusd-live-control
+  scripts\run_all_tests.bat
+
+  ✓ Starts viewer automatically
+  ✓ Waits for bridge
+  ✓ Runs smoke tests
+  ✓ Creates viewer.ready and api.ready flags
+  ✓ Logs everything to logs\api_tests.log
+
+OPTION 2: MANUAL TEST (2 TERMINALS)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Terminal 1 - Start Viewer:
+───────────────────────────
+  cd C:\openusd-live-control
+  scripts\run_usdview.bat
+
+Terminal 2 - Send Command:
+───────────────────────────
+  cd C:\openusd-live-control
+  call scripts\env.bat
+  python scripts\send_cmd.py set_pose /World/Robot 2 0 0 0 45 0
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+EXPECTED RESULTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Viewer opens with Hydra Storm
+2. logs\viewer.log shows: [usdview-bridge] Listening on 127.0.0.1:8765
+3. Command returns: {'ok': True}
+4. Robot moves instantly (no manual refresh!)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+MORE COMMANDS TO TRY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  # Hide/show robot
+  python scripts\send_cmd.py vis /World/Robot false
+  python scripts\send_cmd.py vis /World/Robot true
+
+  # Add a cube
+  python scripts\send_cmd.py add_cube /World/Box 0.5
+
+  # Move camera  
+  python scripts\send_cmd.py set_camera /World/Camera 0 2 8 -10 0 0
+
+  # Remove prim
+  python scripts\send_cmd.py rm /World/Box
+
+  # Save changes
+  python scripts\send_cmd.py save
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+DOCUMENTATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Quick Reference:   QUICKSTART.md
+Full Test Suite:   TESTING.md
+Complete Status:   PROJECT_COMPLETE.md
+Operation Log:     logs\OPERATIONS_LOG.md
+Project Overview:  README.md
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+FLAGS TO CREATE (After Testing)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+When bridge works:     touch viewer.ready
+When commands work:    touch api.ready
+When documented:       touch docs.ready
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+TROUBLESHOOTING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Bridge doesn't start:
+  → Check logs\viewer.log for errors
+  → Verify C:\USD\bin\usdview.exe exists
+
+Commands fail:
+  → Ensure usdview is running
+  → Check bridge is listening (see viewer.log)
+
+Port in use:
+  → Close other applications on port 8765
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ARCHITECTURE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  send_cmd.py → Socket (127.0.0.1:8765) → bridge.py → USD Stage
+                                                            ↓
+                                                      usdview GUI
+                                                    (live updates!)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+READY TO TEST! 🚀
+
+═══════════════════════════════════════════════════════════════
+

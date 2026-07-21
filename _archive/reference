@@ -1,0 +1,88 @@
+import json, socket, threading, traceback
+from pxr import Usd, UsdGeom, Sdf, Gf
+PORT = 8765
+
+def _ensure_xform(stage, path):
+    prim = stage.GetPrimAtPath(path)
+    if not prim: prim = UsdGeom.Xform.Define(stage, path).GetPrim()
+    return UsdGeom.Xformable(prim)
+
+def set_pose(stage, path, t=(0,0,0), r=(0,0,0), s=(1,1,1)):
+    xf = _ensure_xform(stage, path)
+    for op in xf.GetOrderedXformOps(): xf.RemoveXformOp(op)
+    xf.AddScaleOp().Set(Gf.Vec3d(*s))
+    rx, ry, rz = [Gf.DegreesToRadians(v) for v in r]
+    xf.AddRotateZOp().Set(rz*180/3.141592653589793)
+    xf.AddRotateYOp().Set(ry*180/3.141592653589793)
+    xf.AddRotateXOp().Set(rx*180/3.141592653589793)
+    xf.AddTranslateOp().Set(Gf.Vec3d(*t))
+
+def set_visibility(stage, path, visible=True):
+    p = stage.GetPrimAtPath(path)
+    if p and p.IsValid():
+        img = UsdGeom.Imageable(p)
+        img.MakeVisible() if visible else img.MakeInvisible()
+
+def add_cube(stage, path, size=1.0): UsdGeom.Cube.Define(stage, path).CreateSizeAttr(size)
+def remove_prim(stage, path): 
+    if stage.GetPrimAtPath(path): stage.RemovePrim(path)
+def set_attr(stage, path, attr, value):
+    prim = stage.GetPrimAtPath(path)
+    if prim:
+        a = prim.GetAttribute(attr) or prim.CreateAttribute(attr, Sdf.ValueTypeNames.Token)
+        a.Set(value)
+
+def set_camera(stage, cam="/World/Camera", t=(0,0,10), r=(0,0,0)):
+    cam = UsdGeom.Camera.Define(stage, cam)
+    xf = UsdGeom.Xformable(cam.GetPrim())
+    for op in xf.GetOrderedXformOps(): xf.RemoveXformOp(op)
+    rx, ry, rz = [Gf.DegreesToRadians(v) for v in r]
+    xf.AddRotateZOp().Set(rz*180/3.141592653589793)
+    xf.AddRotateYOp().Set(ry*180/3.141592653589793)
+    xf.AddRotateXOp().Set(rx*180/3.141592653589793)
+    xf.AddTranslateOp().Set(Gf.Vec3d(*t))
+
+def open_stage(app, path): app._controller._dataModel.openStage(path)
+def save(stage): stage.GetRootLayer().Save()
+
+def handle(stage, app, cmd):
+    c = cmd.get("cmd")
+    if c == "set_pose":
+        set_pose(stage, cmd.get("path","/World/Robot"),
+                 tuple(cmd.get("t",(0,0,0))), tuple(cmd.get("r",(0,0,0))), tuple(cmd.get("s",(1,1,1))))
+    elif c == "set_visibility": set_visibility(stage, cmd["path"], bool(cmd.get("visible", True)))
+    elif c == "add_cube":       add_cube(stage, cmd["path"], float(cmd.get("size",1.0)))
+    elif c == "remove_prim":    remove_prim(stage, cmd["path"])
+    elif c == "set_attr":       set_attr(stage, cmd["path"], cmd["attr"], cmd["value"])
+    elif c == "set_camera":     set_camera(stage, cmd.get("path","/World/Camera"),
+                                           tuple(cmd.get("t",(0,0,10))), tuple(cmd.get("r",(0,0,0))))
+    elif c == "open_stage":     open_stage(app, cmd["path"])
+    elif c == "save":           save(stage)
+    else: return {"ok": False, "error": f"unknown cmd {c}"}
+    return {"ok": True}
+
+def serve(stage, app):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind(("127.0.0.1", PORT)); s.listen(1)
+    print("[usdview-bridge] Listening on 127.0.0.1:8765")
+    while True:
+        conn, _ = s.accept()
+        try:
+            res = handle(stage, app, json.loads(conn.recv(65536).decode("utf-8")))
+            conn.sendall(json.dumps(res).encode("utf-8"))
+        except Exception as e:
+            conn.sendall(json.dumps({"ok":False,"error":str(e),"trace":traceback.format_exc()}).encode("utf-8"))
+        finally: conn.close()
+
+def start_server(usdviewApi):
+    import threading
+    stage = usdviewApi.stage
+    app = usdviewApi
+    t = threading.Thread(target=serve, args=(stage, app), daemon=True)
+    t.start()
+    print("[usdview-bridge] Plugin started; server thread launched.")
+
+# Auto-start if loaded directly (fallback for --python if supported)
+if 'appController' in dir():
+    stage = appController._dataModel.stage
+    threading.Thread(target=serve, args=(stage, appController), daemon=True).start()

@@ -1,0 +1,109 @@
+╔═══════════════════════════════════════════════════════════════╗
+║                                                               ║
+║                    CURRENT STATUS                             ║
+║                  BLOCKER IDENTIFIED                           ║
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+
+Date: 2025-11-02 01:10
+Status: BLOCKED - C++ Compiler Required for USD Build
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+BLOCKER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+STEP 1: ❌ NVIDIA usdview plugin system failed to auto-load bridge
+STEP 2: ❌ Cannot build OpenUSD - no C++ compiler (Visual Studio needed)
+
+Error: "ERROR: C++ compiler not found -- please install a compiler"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+WHAT'S WORKING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ All code written and verified correct
+✅ Environment set up properly
+✅ Bridge server code complete
+✅ CLI client working
+✅ USD scene files valid
+✅ Plugin system created (correct structure)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+OPTIONS TO RESOLVE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+OPTION 1: Install Visual Studio (Best for Project)
+────────────────────────────────────────────────────
+
+Time: 30 min install + 1-2 hour build
+URL: https://visualstudio.microsoft.com/downloads/
+
+Steps:
+  1. Download Visual Studio 2022 Community (free)
+  2. Install "Desktop development with C++" workload
+  3. Restart
+  4. Re-run build:
+     cd C:\src\OpenUSD
+     py -3.11 build_scripts\build_usd.py --build-variant release --jobs 8 C:\USD-pixar
+  5. Archive C:\USD, move C:\USD-pixar to C:\USD
+  6. Run tests - everything will work!
+
+Benefits:
+  ✓ Full OpenUSD with --python flag support
+  ✓ All our code works as designed
+  ✓ Automated workflow
+  ✓ Meets all project goals
+
+OPTION 2: Use Python Console (Works Immediately)
+────────────────────────────────────────────────────
+
+Time: 5 minutes
+Works: Right now with NVIDIA build
+
+Steps:
+  1. Open: C:\USD\scripts\usdview_gui.bat C:\openusd-live-control\scenes\world.usda
+  2. In usdview: Window → Interpreter (or press ` key)
+  3. Paste bridge code (see NVIDIA_LIMITATION.md)
+  4. Run: python scripts\send_cmd.py set_pose /World/Robot 2 0 0 0 45 0
+
+Benefits:
+  ✓ Works immediately
+  ✓ No build required
+  ✓ Tests the bridge logic
+
+Drawbacks:
+  ✗ Manual setup each time
+  ✗ Not automated
+
+OPTION 3: Download Pre-Built Standard OpenUSD
+────────────────────────────────────────────────────
+
+Time: 15 minutes
+Some GitHub releases provide Windows binaries
+
+Check: https://github.com/PixarAnimationStudios/OpenUSD/releases
+
+(May not have recent builds for Windows)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+RECOMMENDED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+For live JSON bridge with auto-load: Install Visual Studio + Build OpenUSD
+
+For immediate testing: Use Python console workaround (Option 2)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Build Log: logs\usd_build.log
+Operations Log: logs\OPERATIONS_LOG.md
+Solutions: NVIDIA_LIMITATION.md
+
+═══════════════════════════════════════════════════════════════

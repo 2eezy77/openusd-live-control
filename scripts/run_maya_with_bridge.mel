@@ -1,0 +1,42 @@
+// MEL Script to auto-load Maya bridge on Maya startup
+// 
+// USAGE:
+// Save this file to one of these locations:
+// - C:\Users\<YourName>\Documents\maya\2025\scripts\userSetup.mel
+// - C:\Users\<YourName>\Documents\maya\scripts\userSetup.mel
+//
+// Maya will automatically run this script on startup
+// The bridge will start listening on port 8765
+
+global proc userSetup_MayaUSDLiveControl()
+{
+    print("Loading Maya USD Live Control Bridge...\\n");
+    
+    // Wait for Maya to fully initialize
+    scriptJob -runOnce true -event "SceneOpened" "loadMayaUSDLiveBridge()";
+}
+
+global proc loadMayaUSDLiveBridge()
+{
+    // Get the bridge script path
+    string $bridgePath = "C:/openusd-live-control/tools/maya_bridge.py";
+    
+    // Check if file exists
+    if (`filetest -r $bridgePath`)
+    {
+        print("[Maya USD Live Control] Loading bridge from: " + $bridgePath + "\\n");
+        
+        // Execute the Python bridge script
+        python("exec(open(r'" + $bridgePath + "').read())");
+        
+        print("[Maya USD Live Control] Bridge loaded and listening on port 8765\\n");
+    }
+    else
+    {
+        warning("[Maya USD Live Control] Bridge script not found at: " + $bridgePath);
+    }
+}
+
+// Run setup
+userSetup_MayaUSDLiveControl();
+

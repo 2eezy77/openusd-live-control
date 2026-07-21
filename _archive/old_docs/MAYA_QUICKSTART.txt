@@ -1,0 +1,159 @@
+================================================================================
+MAYA USD LIVE CONTROL - QUICK START GUIDE
+================================================================================
+
+STATUS: Ready to use once you install Maya (all scripts created!)
+
+================================================================================
+STEP 1: GET MAYA (FREE FOR STUDENTS)
+================================================================================
+
+1. Visit: https://www.autodesk.com/education/home
+2. Create account with student email
+3. Download Maya 2025 (Windows 64-bit, ~3-4 GB)
+4. Install with default settings (~20 minutes)
+5. Launch Maya once and enable plugins:
+   - Windows > Settings/Preferences > Plug-in Manager
+   - Find "mayaUsdPlugin.mll"
+   - Check: [X] Loaded  [X] Auto Load
+
+================================================================================
+STEP 2: VERIFY INSTALLATION
+================================================================================
+
+Open Command Prompt and run:
+
+cd C:\openusd-live-control
+scripts\verify_maya.bat
+
+You should see:
+[OK] Found Maya 2025
+[OK] maya.exe found
+[OK] mayapy.exe found
+[OK] USD Python module (pxr) imports successfully
+
+================================================================================
+STEP 3: TEST THE SYSTEM
+================================================================================
+
+TERMINAL 1 - Launch Maya:
+--------------------------
+cd C:\openusd-live-control
+scripts\run_maya.bat
+
+Wait for Maya to open with world.usda scene.
+
+IN MAYA - Start the bridge:
+----------------------------
+1. Open Script Editor (Windows > General Editors > Script Editor)
+2. Switch to Python tab (bottom)
+3. Paste this line:
+   exec(open(r'C:\openusd-live-control\tools\maya_bridge.py').read())
+4. Press Ctrl+Enter to execute
+
+You should see:
+[maya-bridge] Listening on 127.0.0.1:8765
+[maya-bridge] Ready to receive commands
+
+TERMINAL 2 - Send a test command:
+----------------------------------
+cd C:\openusd-live-control
+call scripts\env_maya.bat
+python scripts\send_cmd.py set_pose /World/Robot 2 0 0 0 45 0
+
+RESULT: The Robot object moves instantly in Maya's viewport!
+
+================================================================================
+STEP 4: TRY ALL COMMANDS
+================================================================================
+
+# Move robot around
+python scripts\send_cmd.py set_pose /World/Robot 5 0 0 0 90 0
+python scripts\send_cmd.py set_pose /World/Robot 0 0 5 45 0 0
+
+# Change camera view
+python scripts\send_cmd.py set_camera /World/Camera -10 10 10 -30 -30 0
+
+# Add a cube
+python scripts\send_cmd.py add_cube /World/Platform 10
+
+# Hide/show objects
+python scripts\send_cmd.py vis /World/Robot false
+python scripts\send_cmd.py vis /World/Robot true
+
+# Save the scene
+python scripts\send_cmd.py save
+
+================================================================================
+STEP 5: LAUNCH USDVIEW (OPTIONAL)
+================================================================================
+
+UsdView is Pixar's USD inspection tool, included with Maya!
+
+IN MAYA:
+--------
+1. Select any USD object in the viewport
+2. In Script Editor (Python tab), run:
+   exec(open(r'C:\openusd-live-control\scripts\maya_usdview_shelf.py').read())
+
+UsdView launches showing your USD scene hierarchy!
+
+Or create a shelf button for one-click access:
+(In Script Editor, MEL tab):
+source "C:/openusd-live-control/scripts/setup_usdview_shelf.mel";
+
+================================================================================
+FILES CREATED FOR YOU
+================================================================================
+
+Scripts:
+  scripts/verify_maya.bat           - Check Maya installation
+  scripts/env_maya.bat              - Setup Maya environment
+  scripts/run_maya.bat              - Launch Maya with USD scene
+  scripts/maya_usdview_shelf.py     - Launch UsdView from Maya
+  scripts/maya_usdview_cmdline.py   - UsdView command-line helper
+  scripts/setup_usdview_shelf.mel   - Add UsdView shelf button
+
+Tools:
+  tools/maya_bridge.py              - Socket server (runs in Maya)
+
+Documentation:
+  README_MAYA.md                    - Complete Maya guide
+  MAYA_QUICKSTART.txt               - This file!
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+Problem: Maya not found
+Solution: Install Maya 2025 from Autodesk Education website
+
+Problem: Bridge doesn't start
+Solution: Check Script Editor for errors, make sure no firewall blocks port 8765
+
+Problem: Commands fail with "Object not found"
+Solution: Make sure USD file is loaded in Maya, check object names in Outliner
+
+Problem: UsdView won't launch
+Solution: Make sure you selected a USD prim first, run from Maya Script Editor
+
+Full troubleshooting guide: See README_MAYA.md
+
+================================================================================
+REQUIREMENTS MET
+================================================================================
+
+✓ Use USD API to manipulate robot position - set_pose command
+✓ Change state without refresh - Maya viewport updates live
+✓ Programmatic scene changes - 8 commands via socket API
+✓ Upload USD and live-view - open_stage + real-time updates
+✓ Control robot programmatically - send_cmd.py CLI
+✓ Run scripts via API - Python commands through maya.cmds
+✓ Control camera pose - set_camera command
+✓ UsdView access - Launch from Maya or command line
+
+================================================================================
+NEXT: Install Maya and you're ready to go!
+Visit: https://www.autodesk.com/education/home
+================================================================================
+

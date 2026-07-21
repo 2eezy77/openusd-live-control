@@ -1,0 +1,72 @@
+// MEL Script to add UsdView launcher to Maya shelf
+// Run this once to create a shelf button for launching UsdView
+//
+// USAGE:
+// 1. In Maya Script Editor, switch to MEL tab
+// 2. Paste this entire script
+// 3. Press Execute (or Ctrl+Enter)
+// 4. A new "UsdView" button will appear on your current shelf
+
+global proc setupUsdViewShelf()
+{
+    // Get the current shelf
+    string $currentShelf = `tabLayout -query -selectTab $gShelfTopLevel`;
+    
+    // Python script to execute when button is clicked
+    string $pythonScript = 
+        "import maya.cmds as cmds\n" +
+        "import ufe\n" +
+        "from pxr import Usd\n" +
+        "import mayaUsd as uLib\n" +
+        "import os\n" +
+        "import sys\n" +
+        "import subprocess\n" +
+        "\n" +
+        "if ufe.GlobalSelection.get().empty():\n" +
+        "    cmds.error('Select a USD prim first!')\n" +
+        "else:\n" +
+        "    ufeItem = ufe.GlobalSelection.get().back()\n" +
+        "    ufePathGateway = ufe.Path(ufeItem.path().segments[0])\n" +
+        "    stage = uLib.ufe.getStage(str(ufePathGateway))\n" +
+        "    sdfLayer = stage.GetRootLayer()\n" +
+        "    if not sdfLayer.realPath:\n" +
+        "        cmds.error('USD layer has no file path')\n" +
+        "    else:\n" +
+        "        mayaVer = int(cmds.about(q=True, majorVersion=True))\n" +
+        "        mayapyBinPath = os.path.join(os.environ['MAYA_LOCATION'], 'bin')\n" +
+        "        if mayaVer == 2022:\n" +
+        "            mayapyPath = os.path.join(mayapyBinPath, 'mayapy{ver}'.format(ver='' if sys.version_info.major == 3 else '2'))\n" +
+        "        else:\n" +
+        "            mayapyPath = os.path.join(mayapyBinPath, 'mayapy')\n" +
+        "        usdRootPath = os.environ['USD_LOCATION']\n" +
+        "        mayapyPath = mayapyPath.replace('\\\\', os.path.sep).replace('/', os.path.sep)\n" +
+        "        usdRootPath = usdRootPath.replace('\\\\', os.path.sep).replace('/', os.path.sep)\n" +
+        "        sdfLayerPath = sdfLayer.realPath.replace('\\\\', os.path.sep).replace('/', os.path.sep)\n" +
+        "        usdToolsPath = os.path.join(usdRootPath, 'bin')\n" +
+        "        usdViewPath = os.path.join(usdToolsPath, 'usdview')\n" +
+        "        try:\n" +
+        "            import OpenGL\n" +
+        "        except:\n" +
+        "            subprocess.check_call([mayapyPath, '-m', 'pip', 'install', 'PyOpenGL==3.1.0'])\n" +
+        "        creationflags = 0x08000000 if sys.platform in ('win32') else 0\n" +
+        "        print('Launching UsdView: ' + sdfLayerPath)\n" +
+        "        subprocess.Popen([mayapyPath, usdViewPath, sdfLayerPath], creationflags=creationflags)\n";
+    
+    // Create the shelf button
+    shelfButton
+        -parent $currentShelf
+        -label "UsdView"
+        -annotation "Launch UsdView for selected USD prim"
+        -image1 "usd_mayaPlugin_UsdStageNode.png"  // Use MayaUSD icon if available
+        -command $pythonScript
+        -sourceType "python"
+        -commandRepeatable 0
+        -flat 1;
+    
+    print("UsdView shelf button created successfully!\n");
+    print("Select a USD prim in the viewport and click the button to launch UsdView.\n");
+}
+
+// Execute the function
+setupUsdViewShelf();
+

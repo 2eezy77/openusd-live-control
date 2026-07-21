@@ -1,0 +1,27 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# IDE / Editor
+.vs/
+.idea/
+*.swp
+*.swo
+
+# Maya / OS
+*.ma
+*.mb
+logs/
+.DS_Store
+Thumbs.db
+
+# Optional: exclude large or generated assets (uncomment if needed)
+# scenes/*.usd
+# third_party/
