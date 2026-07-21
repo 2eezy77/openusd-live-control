@@ -22,6 +22,11 @@ logs/
 .DS_Store
 Thumbs.db
 
+# Local / archived noise (not for public tree)
+_archive/
+docs_archive/
+*.log
+
 # Optional: exclude large or generated assets (uncomment if needed)
 # scenes/*.usd
 # third_party/
