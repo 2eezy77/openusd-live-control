@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>OpenUSD Live Control — Architecture</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background: #0b1220; font-family: ui-sans-serif, system-ui, sans-serif; }
+    .box { background: #111827; border: 1px solid #334155; border-radius: 16px; padding: 20px 22px; }
+    .arrow { color: #38bdf8; font-size: 28px; font-weight: 700; }
+  </style>
+</head>
+<body class="text-slate-100 min-h-screen flex items-center justify-center p-10">
+  <div class="w-full max-w-5xl">
+    <h1 class="text-2xl font-bold mb-2">OpenUSD Live Control</h1>
+    <p class="text-slate-400 mb-8 text-sm">CLI → TCP bridge inside Maya → cmds / MayaUSD → live viewport &amp; USD stage</p>
+    <div class="grid grid-cols-[1fr_auto_1fr_auto_1fr_auto_1fr] items-center gap-3">
+      <div class="box text-center">
+        <div class="text-sky-300 text-xs font-semibold uppercase tracking-wide">CLI</div>
+        <div class="mt-2 font-semibold">send_cmd.py</div>
+        <div class="text-slate-400 text-xs mt-2">JSON over TCP<br/>127.0.0.1:8765</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="box text-center">
+        <div class="text-emerald-300 text-xs font-semibold uppercase tracking-wide">Bridge</div>
+        <div class="mt-2 font-semibold">maya_bridge.py</div>
+        <div class="text-slate-400 text-xs mt-2">Runs inside Maya<br/>socket server</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="box text-center">
+        <div class="text-amber-300 text-xs font-semibold uppercase tracking-wide">API</div>
+        <div class="mt-2 font-semibold">Maya cmds / MayaUSD</div>
+        <div class="text-slate-400 text-xs mt-2">create · pose · color<br/>open USD · animate</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="box text-center">
+        <div class="text-violet-300 text-xs font-semibold uppercase tracking-wide">Result</div>
+        <div class="mt-2 font-semibold">Viewport + USD</div>
+        <div class="text-slate-400 text-xs mt-2">Instant updates<br/>no manual refresh</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

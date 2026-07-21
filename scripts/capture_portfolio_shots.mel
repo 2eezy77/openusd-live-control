@@ -1,0 +1,1 @@
+python("exec(open(r'C:/Users/Isaac/work/1-projects/openusd-live-control/scripts/capture_portfolio_shots.py').read())");

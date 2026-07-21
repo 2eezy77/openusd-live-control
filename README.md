@@ -2,6 +2,16 @@
 
 Real-time Maya / USD scene control from the command line. A small socket bridge runs inside Maya; `send_cmd.py` sends JSON commands and the viewport updates instantly.
 
+## Screenshots
+
+| CLI commands | Architecture |
+|:------------:|:------------:|
+| ![CLI send_cmd demo](docs/cli.jpg) | ![System architecture](docs/architecture.jpg) |
+
+![Live viewport demo — colored boxes driven by send_cmd-style updates](docs/viewport.jpg)
+
+*Viewport image is a demo scene matching the `add_cube` / `set_color` / `set_pose` workflow (no private project assets).*
+
 ## Quick start
 
 **Requirements:** Maya 2026 (or compatible), MayaUSD, Windows 10/11.

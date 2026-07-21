@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>OpenUSD Live Control — Viewport demo</title>
+  <style>
+    html, body { margin: 0; height: 100%; background: #1a1d24; font-family: ui-sans-serif, system-ui, sans-serif; color: #e5e7eb; overflow: hidden; }
+    #bar { position: absolute; left: 0; right: 0; top: 0; z-index: 2; display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; background: linear-gradient(#111827ee,#11182700); font-size: 13px; }
+    #bar .brand { font-weight: 700; }
+    #bar .pill { background: #064e3b; color: #6ee7b7; border-radius: 999px; padding: 3px 10px; font-size: 11px; font-weight: 700; letter-spacing: .04em; }
+    #hud { position: absolute; left: 16px; bottom: 16px; z-index: 2; background: #0f172acc; border: 1px solid #334155; border-radius: 12px; padding: 12px 14px; font-family: ui-monospace, Consolas, monospace; font-size: 12px; line-height: 1.5; max-width: 420px; }
+    #hud .ok { color: #86efac; }
+    #hud .cmd { color: #7dd3fc; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+  <div id="bar">
+    <div><span class="brand">OpenUSD Live Control</span> · Maya viewport demo</div>
+    <div class="pill">DEMO SCENE</div>
+  </div>
+  <div id="hud">
+    <div class="cmd">send_cmd.py set_color Box_Red red</div>
+    <div class="ok">{"ok": true}</div>
+    <div class="cmd">send_cmd.py set_pose Box_Blue 0 1 0 0 35 0</div>
+    <div class="ok">{"ok": true} · live viewport update</div>
+  </div>
+  <script type="importmap">
+    { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
+  </script>
+  <script type="module">
+    import * as THREE from 'three';
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x1a1d24);
+    scene.fog = new THREE.Fog(0x1a1d24, 18, 40);
+
+    const camera = new THREE.PerspectiveCamera(40, innerWidth/innerHeight, 0.1, 100);
+    camera.position.set(8.5, 6.5, 10.5);
+    camera.lookAt(0, 1, 0);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.shadowMap.enabled = true;
+    document.body.appendChild(renderer.domElement);
+
+    const hemi = new THREE.HemisphereLight(0xb1c5ff, 0x222833, 1.1);
+    scene.add(hemi);
+    const key = new THREE.DirectionalLight(0xffffff, 1.3);
+    key.position.set(6, 10, 4);
+    key.castShadow = true;
+    scene.add(key);
+
+    const ground = new THREE.Mesh(
+      new THREE.PlaneGeometry(20, 20),
+      new THREE.MeshStandardMaterial({ color: 0x2e3440, roughness: 0.95 })
+    );
+    ground.rotation.x = -Math.PI/2;
+    ground.receiveShadow = true;
+    scene.add(ground);
+
+    const grid = new THREE.GridHelper(20, 20, 0x475569, 0x334155);
+    grid.position.y = 0.01;
+    scene.add(grid);
+
+    function box(color, x, rotY=0) {
+      const m = new THREE.Mesh(
+        new THREE.BoxGeometry(2, 2, 2),
+        new THREE.MeshStandardMaterial({ color, roughness: 0.45, metalness: 0.05 })
+      );
+      m.position.set(x, 1, 0);
+      m.rotation.y = rotY;
+      m.castShadow = true;
+      scene.add(m);
+      return m;
+    }
+    const red = box(0xd92d20, -3);
+    const blue = box(0x3370f2, 0, 0.6);
+    const yellow = box(0xf2c94c, 3);
+
+    let t = 0;
+    function tick() {
+      t += 0.01;
+      red.position.x = -3 + Math.sin(t) * 0.15;
+      blue.rotation.y = 0.6 + t * 0.2;
+      yellow.material.color.setHSL(0.12 + Math.sin(t*0.7)*0.03, 0.85, 0.55);
+      renderer.render(scene, camera);
+      requestAnimationFrame(tick);
+    }
+    tick();
+    addEventListener('resize', () => {
+      camera.aspect = innerWidth/innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    });
+    // signal ready for screenshotters
+    window.__VIEWPORT_READY__ = true;
+  </script>
+</body>
+</html>

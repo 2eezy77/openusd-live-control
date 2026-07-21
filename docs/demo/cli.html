@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>OpenUSD Live Control — CLI demo</title>
+  <style>
+    body { margin: 0; background: #0b1220; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .wrap { max-width: 1100px; margin: 28px auto; padding: 0 16px; }
+    .term {
+      background: #0f172a; border: 1px solid #1e293b; border-radius: 12px;
+      box-shadow: 0 20px 50px rgba(0,0,0,.45); overflow: hidden;
+    }
+    .bar { background: #111827; padding: 10px 14px; display: flex; gap: 8px; align-items: center; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .r { background: #f87171; } .y { background: #fbbf24; } .g { background: #34d399; }
+    .title { color: #94a3b8; font-size: 12px; margin-left: 8px; }
+    .body { padding: 18px 20px 22px; color: #e2e8f0; font-size: 14px; line-height: 1.55; }
+    .prompt { color: #38bdf8; }
+    .cmd { color: #f8fafc; }
+    .out { color: #86efac; }
+    .dim { color: #64748b; }
+    .comment { color: #94a3b8; }
+    h1 { color: #f1f5f9; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 20px; margin: 0 0 8px; }
+    p { color: #94a3b8; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 13px; margin: 0 0 16px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>OpenUSD Live Control</h1>
+    <p>JSON commands over TCP → Maya bridge → viewport / USD stage updates live</p>
+    <div class="term">
+      <div class="bar">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="title">powershell — openusd-live-control</span>
+      </div>
+      <div class="body">
+        <div><span class="dim"># Maya bridge already listening on 127.0.0.1:8765</span></div>
+        <div><span class="prompt">PS&gt;</span> <span class="cmd">python scripts\send_cmd.py add_cube /World/Box 2</span></div>
+        <div class="out">{"ok": true, "path": "/World/Box"}</div>
+        <br/>
+        <div><span class="prompt">PS&gt;</span> <span class="cmd">python scripts\send_cmd.py set_color Box red</span></div>
+        <div class="out">{"ok": true, "color": "red"}</div>
+        <br/>
+        <div><span class="prompt">PS&gt;</span> <span class="cmd">python scripts\send_cmd.py set_pose Box 5 0 0 0 90 0</span></div>
+        <div class="out">{"ok": true}</div>
+        <br/>
+        <div><span class="prompt">PS&gt;</span> <span class="cmd">python scripts\send_cmd.py list_objects</span></div>
+        <div class="out">{"ok": true, "objects": ["Ground", "Box_Red", "Box_Blue", "Box_Yellow", ...]}</div>
+        <br/>
+        <div class="comment"># Typical localhost round-trip &lt; 50ms — viewport updates without clicking in Maya</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
